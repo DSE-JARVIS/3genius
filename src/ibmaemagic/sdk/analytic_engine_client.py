@@ -100,14 +100,10 @@ class AnalyticEngineClient():
         """
         method = '/zen-data/v2/storageclasses'
         response = self.__GET__(method)
-        try:
-            result = json.loads(response)
-            if "requestObj" in result and len(result["requestObj"]) >0:
-                result = [val["metadata"]["name"] for val in result["requestObj"]]
-                return self.__jsonify__(json.dumps(result))
-            
-        except:
-            return self.__jsonify__(response)
+        result = json.loads(response)
+        if "requestObj" in result and len(result["requestObj"]) >0:
+            result = [val["metadata"]["name"] for val in result["requestObj"]]
+            return self.__jsonify__(json.dumps(result))
         
         return self.__jsonify__(response)
     
@@ -464,7 +460,6 @@ class AnalyticEngineClient():
         
         if instance_display_name == None and instance_id ==None:
             raise Exception("Both instance_display_name and instance_id can't be None")
-        
         spark_jobs_endpoint = self.get_spark_end_point(instance_display_name, instance_id)
         spark_jobs_endpoint= spark_jobs_endpoint["spark_jobs_endpoint"].replace(self.host, "")
 #         spark_jobs_endpoint = spark_jobs_endpoint.lstrip("/")
@@ -475,7 +470,6 @@ class AnalyticEngineClient():
             'accept': 'application/json',
             'content-type': 'application/json'
         }
-        
         response = self.__GET__(spark_jobs_endpoint, headers=headers)
         return self.__jsonify__(json.dumps(response))
         
@@ -693,7 +687,6 @@ class AnalyticEngineClient():
             payload["serviceInstanceDisplayName"] = instance_display_name
             
         payload = json.dumps(payload)
-        print(payload)
         
         method = '/zen-data/v2/serviceInstance'
         response = self.__DELETE__(method, payloads = payload)
@@ -723,7 +716,6 @@ class AnalyticEngineClient():
             payload["serviceInstanceDisplayName"] = volume_instance_display_name
             
         payload = json.dumps(payload)
-        print(payload)
         
         method = '/zen-data/v2/serviceInstance'
         response = self.__DELETE__(method, payloads = payload)

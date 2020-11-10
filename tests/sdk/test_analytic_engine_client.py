@@ -224,11 +224,140 @@ class TestAnalyticEngineClient():
         assert isinstance(result, dict)
         assert result["_messageCode_"] == "200"
 
-    # def test_submit_word_count(self):
-    #     fake_json = fj.submit_job_json
-    #     with patch('ae_client.AnalyticsEngineClient.submit_word_count_job') as mock_get:
-    #         mock_get.return_value= fake_json
-    #         result = analytics_engine.submit_word_count_job(INSTANCE_NAME)
-    #         self.assertIsInstance(result, dict)
-    #         self.assertEqual(result["id"], fake_json["id"])
-    #         self.assertEqual(result["job_state"], fake_json["job_state"])
+    def test_submit_word_count(self, mock_client):
+        fake_json = {"id":"bb1adac0-7193-49c8-a700-e1e3f3f12bdb","job_state":"RUNNING"}
+        mock_client.submit_word_count_job =mock.MagicMock(return_value=fake_json)
+        result = mock_client.submit_word_count_job("INSTANCE_NAME")
+        assert isinstance(result, dict)
+        assert result["id"]==fake_json["id"]
+        assert result["job_state"]==fake_json["job_state"]
+
+    def test_start_history_server(self, mock_client):
+        fake_json = "History server started successfully"
+        with pytest.raises(Exception):  
+            result = mock_client.start_history_server()
+        mock_client.get_history_server_end_point =mock.MagicMock(return_value={"history_server_endpoint":"https://www.foo.com"})
+        mock_client.__POST__ =mock.MagicMock(return_value=fake_json)
+        result = mock_client.start_history_server("INSTANCE_NAME")
+        assert result == "History server started successfully" or "History server already started"
+
+    def test_stop_history_server(self, mock_client):
+
+        with pytest.raises(Exception):  
+            result = mock_client.stop_history_server()
+
+        mock_client.get_history_server_end_point =mock.MagicMock(return_value={"history_server_endpoint":"https://www.foo.com"})
+        mock_client.__DELETE__ =mock.MagicMock(return_value="")
+        result = mock_client.stop_history_server("INSTANCE_NAME")
+        assert result == ""
+    
+    def test_submit_job(self, mock_client):
+        with pytest.raises(Exception):  
+            result = mock_client.submit_job()
+
+        with pytest.raises(Exception):  
+            result = mock_client.submit_job(volumes=[])
+
+
+        volumes = [{
+            "volume_name": "VOLUME_NAME",
+            "source_path": "",
+            "mount_path": "/myapp"
+            }
+        ]
+        size ={ 
+        "num_workers": 1, 
+        "worker_size": { 
+            "cpu": 1, 
+            "memory": "8g"
+        }, 
+        "driver_size": { 
+            "cpu": 1, 
+            "memory": "4g" 
+        } 
+        }
+        application_jar = "/myapp/sparkify.py"
+        main_class = "org.apache.spark.deploy.SparkSubmit"
+
+        fake_json = {"id":"bb1adac0-7193-49c8-a700-e1e3f3f12bdb","job_state":"RUNNING"}
+        mock_client.get_spark_end_point = mock.MagicMock(return_value={"spark_jobs_endpoint":"https://www.foo.com"})
+        mock_client.__get_jobs_auth_token__ = mock.MagicMock(return_value="DUMMY-TOKEN")
+        mock_client.__POST__ = mock.MagicMock(return_value=fake_json)
+
+        result = mock_client.submit_job("INSTANCE_NAME",volumes=volumes, size=size, application_jar=application_jar, main_class=main_class )
+        assert isinstance(result, dict)
+        assert result["id"]==fake_json["id"]
+        assert result["job_state"] == fake_json["job_state"]
+
+    def test_get_all_jobs(self, mock_client):
+        unique_id = "DUMMY-ID"
+        with pytest.raises(Exception):  
+            result = mock_client.get_all_jobs()
+
+        with pytest.raises(Exception):  
+            result = mock_client.get_all_jobs(unique_id)
+        
+        with pytest.raises(Exception):  
+            result = mock_client.get_all_jobs(instance_display_name = unique_id)
+        
+        with pytest.raises(Exception):  
+            result = mock_client.get_all_jobs(instance_id = unique_id)
+        
+        with pytest.raises(Exception):  
+            result = mock_client.get_all_jobs(instance_display_name = unique_id, instance_id = unique_id)
+
+        fake_json = ["job1", "job2", "job3"]
+        mock_client.get_spark_end_point = mock.MagicMock(return_value={"spark_jobs_endpoint":"https://www.foo.com"})
+        mock_client.__get_jobs_auth_token__ = mock.MagicMock(return_value="DUMMY-TOKEN")
+        mock_client.__GET__ = mock.MagicMock(return_value=fake_json)
+        result = mock_client.get_all_jobs(instance_display_name = unique_id)
+        assert isinstance(result, list)
+
+    def test_delete_volume(self, mock_client):
+        unique_id = "DUMMY-ID"
+        with pytest.raises(Exception):  
+            result = mock_client.delete_volume()
+        fake_json = {"_messageCode_":"200","message":"Service Instance deletion initiated."} 
+
+        mock_client.__DELETE__ = mock.MagicMock(return_value=fake_json)
+        result = mock_client.delete_volume(volume_instance_display_name = unique_id)
+        assert result["_messageCode_"]== "200"
+        
+        result = mock_client.delete_volume(volume_id = unique_id)
+        assert result["_messageCode_"]== "200"
+
+    def test_delete_instance(self, mock_client):
+        unique_id = "DUMMY-ID"
+        with pytest.raises(Exception):  
+            result = mock_client.delete_instance()
+
+        fake_json = {"_messageCode_":"200","message":"Service Instance deletion initiated."} 
+        mock_client.__DELETE__ = mock.MagicMock(return_value=fake_json)
+        result = mock_client.delete_instance(instance_display_name = unique_id)
+        assert result["_messageCode_"]=="200"
+        
+        mock_client.__DELETE__ = mock.MagicMock(return_value=fake_json)
+        result = mock_client.delete_instance(instance_id = unique_id)
+        assert result["_messageCode_"] == "200"
+    
+    def test_download_logs(self, mock_client):
+        with pytest.raises(Exception):  
+            result = mock_client.download_logs()
+
+        with pytest.raises(Exception):  
+            result = mock_client.download_logs(volume_name = None)
+
+        with pytest.raises(Exception):  
+            result = mock_client.download_logs(volume_name="--", job_id=None)
+        
+        with pytest.raises(Exception):  
+            result = mock_client.download_logs(volume_name="--", job_id="--", instance_display_name=None)
+        
+        with pytest.raises(Exception):  
+            result = mock_client.download_logs(instance_display_name="--", volume_name="--", job_id="--", )
+
+        mock_client.get_spark_end_point = mock.MagicMock(return_value={"spark_jobs_endpoint":"https://www.foo.com/id1/id2/id3/id4"})
+        mock_client.__GET__ = mock.MagicMock(return_value="\n".join(["*"*val for val in range(5)]))
+        result = mock_client.download_logs(volume_name="--", job_id="--", instance_display_name="--")
+
+        assert isinstance(result, str)
