@@ -10,7 +10,7 @@ src/ibmaemagic.egg-info/zip-safe
 src/ibmaemagic/contrib/__init__.py
 src/ibmaemagic/contrib/ibm_object_storage_persistor.py
 src/ibmaemagic/magic/__init__.py
-src/ibmaemagic/magic/analytic_engine_client.py
+src/ibmaemagic/magic/analytic_magic_client.py
 src/ibmaemagic/magic/functions.py
 src/ibmaemagic/sdk/__init__.py
 src/ibmaemagic/sdk/analytic_engine_client.py
