@@ -7,7 +7,9 @@ import os
 import pytest
 import json
 from unittest import mock
-from ibmaemagic.sdk.analytic_engine_client import AnalyticEngineClient
+import sys
+sys.path.append("./src/ibmaemagic/sdk/")
+from analytic_engine_client import AnalyticEngineClient
 from uuid import uuid4
 import http
 
