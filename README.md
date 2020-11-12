@@ -1,6 +1,9 @@
 # How to use ?
 
-```from ibmaemagic import AnalyticEngineClient
+```
+pip install ibmaemagic
+
+from ibmaemagic import AnalyticEngineClient
 
 #create client
 ae = AnalyticEngineClient(host="dummy-host")
