@@ -1,8 +1,11 @@
+# Installation
+```
+pip install ibmaemagic
+```
+
 # How to use ?
 
 ```
-pip install ibmaemagic
-
 from ibmaemagic import AnalyticEngineClient
 
 #create client
