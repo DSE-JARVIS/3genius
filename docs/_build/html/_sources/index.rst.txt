@@ -14,3 +14,4 @@ Welcome to IBM AE Magic Documentation
    tutorial
    api
    development
+   about
