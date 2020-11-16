@@ -1,7 +1,0 @@
-
-[dev]
-
-[test]
-pytest
-pytest-cov
-mock

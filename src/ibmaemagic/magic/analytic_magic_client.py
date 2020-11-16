@@ -18,7 +18,7 @@ from ibmaemagic.contrib.ibm_object_storage_persistor import IBMObjectStoragePers
 """
 
 
-class AnalyticMagicClient():
+class AnalyticsMagicClient():
     
     token = None
     uid = None

@@ -14,23 +14,21 @@ from pathlib import Path
 """
 
 
-class AnalyticEngineClient():
+class AnalyticsEngineClient():
     
     def __init__(self, host, uid=None, pwd=None, token=None, verbose=True):
         """
-        @param::token: authentication token in string
-        @param::host: host url in string
-        return catalog client instance
+        @param string::host: Cloudpak for data host url
+        @param string::uid: Username for the account
+        @param string::pwd: Password for the account
+        @param string::token: authentication barrer token in string
+        @param bool::verbose: Turn on/off the verbose messages
+        return AnalyticEngine client object
         """
         if host == None:
             raise Exception('The host url is required.') 
         else:
             self.host = host
-        
-#         if instance_display_name == None:
-#             raise Exception('Analytics Engine display name is required.') 
-#         else:
-#             self.instance_display_name = instance_display_name
         
         if token != None:
             self.token = token
@@ -41,19 +39,6 @@ class AnalyticEngineClient():
         else:
             raise Exception('The uid/pwd and authentication token can not be empty at the same time.')
             
-        
-        
-        # retrieve auth token
-#         if token == None:
-#             self.__get_auth_token__(uid,pwd)
-#         else:
-#             self.token = token   
-            
-#         if self.token != None:
-#             self.__get_jobs_auth_token__(self.token, self.instance_display_name)
-#         else:
-#             raise Exception('Something went wrong, during getting jobs auth token') 
-        # debug info
         if verbose:
             print('Initialize Cloud Pak For Data: sucessfully!')
     
@@ -77,6 +62,8 @@ class AnalyticEngineClient():
 
     def get_volume_status(self, volume_id=None, volume_name=None):
         """
+        @param string::voulume_id: Id of the volume to get status
+        @param string::volume_name: Name of the volume to get status
         return the status of the volume
         """
         if volume_id == None and volume_name == None :
