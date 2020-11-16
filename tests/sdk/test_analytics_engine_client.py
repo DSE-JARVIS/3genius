@@ -9,7 +9,7 @@ import json
 from unittest import mock
 import sys
 sys.path.append("./src/ibmaemagic/sdk/")
-from analytic_engine_client import AnalyticEngineClient
+from analytics_engine_client import AnalyticsEngineClient
 from uuid import uuid4
 import http
 
@@ -21,7 +21,7 @@ def mock_client(request):
     # define the mock of analytic engine client
     host = 'https://www.foo.com'
     token = 'fake_auth_token'
-    client = AnalyticEngineClient(host, token=token)
+    client = AnalyticsEngineClient(host, token=token)
     return client
 
 
@@ -45,7 +45,7 @@ class TestAnalyticEngineClient():
                 ibm_auth_response = json.dumps({'accessToken':'ibm_auth_token'})
                 mock_conn().getresponse().read().decode= mock.MagicMock(return_value=ibm_auth_response)
                 # act
-                client = AnalyticEngineClient(host, token=token, uid=uid, pwd=pwd, verbose=False)
+                client = AnalyticsEngineClient(host, token=token, uid=uid, pwd=pwd, verbose=False)
                 # assert
                 assert client.token == token_list[i]
                 assert client.host == host
@@ -63,7 +63,7 @@ class TestAnalyticEngineClient():
         for param in param_list:
             host, token = param['host'], param['token']
             with pytest.raises(Exception):
-                AnalyticEngineClient(host, token=token)
+                AnalyticsEngineClient(host, token=token)
 
     def test_get_all_instances(self, mock_client):
         # arrange

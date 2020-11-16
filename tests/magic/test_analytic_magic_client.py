@@ -2,15 +2,15 @@ import pytest
 import os
 import json
 from unittest import mock
-from ibmaemagic.magic.analytic_magic_client import AnalyticMagicClient
+from ibmaemagic.magic.analytic_magic_client import AnalyticsMagicClient
 
 
 @pytest.fixture(scope='function')
 def mock_client(monkeypatch):
     monkeypatch.setenv('USER_ACCESS_TOKEN', 'ibm_fake_token')
-    AnalyticMagicClient.init('https://foobar.com')
-    yield AnalyticMagicClient
-    AnalyticMagicClient.reset()
+    AnalyticsMagicClient.init('https://foobar.com')
+    yield AnalyticsMagicClient
+    AnalyticsMagicClient.reset()
 
 
 class TestAnalyticMagicClient():
@@ -31,13 +31,13 @@ class TestAnalyticMagicClient():
                 ibm_auth_response = json.dumps({'accessToken':'ibm_auth_token'})
                 mock_conn().getresponse().read().decode= mock.MagicMock(return_value=ibm_auth_response)
                 # act
-                AnalyticMagicClient.init(host, uid=uid, pwd=pwd, verbose=False)
+                AnalyticsMagicClient.init(host, uid=uid, pwd=pwd, verbose=False)
                 # assert
-                assert AnalyticMagicClient.token == token_list[i]
-                assert AnalyticMagicClient.host == host
+                assert AnalyticsMagicClient.token == token_list[i]
+                assert AnalyticsMagicClient.host == host
             if 'USER_ACCESS_TOKEN' in os.environ:
                  monkeypatch.delenv('USER_ACCESS_TOKEN')
-            AnalyticMagicClient.reset()
+            AnalyticsMagicClient.reset()
 
     def test_init_with_invalid_param(self, monkeypatch):
         # arange
@@ -50,10 +50,10 @@ class TestAnalyticMagicClient():
             if env: # set enviroment variable
                 monkeypatch.setenv('USER_ACCESS_TOKEN', env)
             with pytest.raises(ValueError):
-                AnalyticMagicClient.init(host)
+                AnalyticsMagicClient.init(host)
             if 'USER_ACCESS_TOKEN' in os.environ:
                 monkeypatch.delenv('USER_ACCESS_TOKEN')
-            AnalyticMagicClient.reset()
+            AnalyticsMagicClient.reset()
 
     def test_connection_ready(self, mock_client):
         # arange
