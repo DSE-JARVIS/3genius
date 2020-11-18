@@ -6,10 +6,10 @@ pip install ibmaemagic
 # How to use ?
 
 ```
-from ibmaemagic import AnalyticEngineClient
+from ibmaemagic import AnalyticsEngineClient
 
 #create client
-ae = AnalyticEngineClient(host="dummy-host")
+ae = AnalyticsEngineClient(host="dummy-host")
 
 #create volume and upload file
 ae.create_volume("VOLUME-NAME", create_arguments=create_arguments)
