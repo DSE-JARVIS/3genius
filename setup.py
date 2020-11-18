@@ -30,7 +30,7 @@ class CleanCommand(Command):
 
 setup(
     name='ibmaemagic',
-    version='0.0.3',
+    version='0.0.4',
     license='BSD 2-Clause License',
     author='Team Jarvis',
     author_email='dse@ibm.com',
